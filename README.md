@@ -1,11 +1,11 @@
-# Node - Koa - Typescript Project
+# Const - Koa - Typescript Project
 
 
 [![NPM version](https://img.shields.io/npm/v/node-typescript-koa-rest.svg)](https://www.npmjs.com/package/node-typescript-koa-rest)
 [![Dependency Status](https://david-dm.org/javieraviles/node-typescript-koa-rest.svg)](https://david-dm.org/javieraviles/node-typescript-koa-rest)
 
 
-The main purpose of this repository is to build a good project setup and workflow for writing a Node api rest in TypeScript using KOA and an SQL DB.
+The main purpose of this repository is to build a good project setup and workflow for writing a Node api rest in TypeScript using KOA and firebase.
 
 Koa is a new web framework designed by the team behind Express, which aims to be a smaller, more expressive, and more robust foundation for web applications and APIs. Through leveraging generators Koa allows you to ditch callbacks and greatly increase error-handling. Koa does not bundle any middleware within core, and provides an elegant suite of methods that make writing servers fast and enjoyable.
 
@@ -28,10 +28,10 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJuYW1lIjoiSmF2aWVyIEF2
 | method             | resource         | description                                                                                    |
 |:-------------------|:-----------------|:-----------------------------------------------------------------------------------------------|
 | `GET`              | `/`              | Simple hello world response                                                                    |
-| `GET`              | `/users`         | returns the collection of users present in the DB                                              |
-| `GET`              | `/users/:id`     | returns the specified id user                                                                  |
+| `GET`              | `/users`         | returns the collection of user present in the DB                                              |
+| `GET`              | `/users/:uid`     | returns the specified id user                                                                  |
 | `POST`             | `/users`         | creates a user in the DB (object user to be includued in request's body)                       |
-| `PUT`              | `/users/:id`     | updates an already created user in the DB (object user to be includued in request's body)      |
+| `PUT`              | `/users/id`     | updates a already created user in the DB (object user to be includued in request's body)      |
 | `DELETE`           | `/users/:id`     | deletes a user from the DB (JWT token user ID must be the same as the user you want to delete) |
 
 - [Node - Koa - Typescript Project](#node---koa---typescript-project)
@@ -80,7 +80,6 @@ To build and run this app locally you will need:
 ## Features:
  * Nodemon - server auto-restarts when code changes
  * Koa v2
- * TypeORM (SQL DB) with basic CRUD included
  * Swagger decorator (auto generated swagger docs)
  * Class-validator - Decorator based entities validation
  * Docker-compose ready to go
@@ -100,11 +99,11 @@ To build and run this app locally you will need:
 # Getting Started
 - Clone the repository
 ```
-git clone --depth=1 https://github.com/javieraviles/node-typescript-koa-rest.git <project_name>
+git clone --depth=1 https://github.com/Emmynash/const-server.git
 ```
 - Install dependencies
 ```
-cd <project_name>
+cd const server
 npm install
 ```
 - Run the project directly in TS
@@ -123,13 +122,6 @@ npm run start
 npm run test:integration:local (newman needed)
 npm run test:load (locust needed)
 ```
-
-## Docker (optional)
-A docker-compose file has been added to the project with a postgreSQL (already setting user, pass and dbname as the ORM config is expecting) and an ADMINER image (easy web db client).
-
-It is as easy as go to the project folder and execute the command 'docker-compose up' once you have Docker installed, and both the postgreSQL server and the Adminer client will be running in ports 5432 and 8080 respectively with all the config you need to start playing around. 
-
-If you use Docker natively, the host for the server which you will need to include in the ORM configuration file will be localhost, but if you were to run Docker in older Windows versions, you will be using Boot2Docker and probably your virtual machine will use your ip 192.168.99.100 as network adapter (if not, command `docker-machine ip` will tell you). This mean your database host will be the aforementioned ip and in case you want to access the web db client you will also need to go to http://192.168.99.100/8080
 
 ## Setting up the Database - ORM
 This API is prepared to work with an SQL database, using [TypeORM](https://github.com/typeorm/typeorm). In this case we are using postgreSQL, and that is why in the package.json 'pg' has been included. If you where to use a different SQL database remember to install the correspondent driver.
@@ -193,12 +185,10 @@ For further documentation regarding validations see [class-validator docs](https
 
 
 ## Environment variables
-Create a .env file (or just rename the .example.env) containing all the env variables you want to set, dotenv library will take care of setting them. This project is using three variables at the moment:
+Create a .env file (or just rename the .example.env) containing all the env variables you want to set, update path to your firebase serviceAccountKey and database url. This project is using two variables at the moment:
 
- * PORT -> port where the server will be started on, Heroku will set this env variable automatically
- * NODE_ENV -> environment, development value will set the logger as debug level, also important for CI. In addition will determine if the ORM connects to the DB through SSL or not.
- * JWT_SECRET -> secret value, JWT tokens should be signed with this value
- * DATABASE_URL -> DB connection data in connection-string format.
+ * FIREBASE_SERVICE_ACCOUNT_KEY_PATH -> path to your firebase serviceAccountKey.json
+ * FIREBASE_DATABASE_URL -> path to your firebase database url
 
 ## Getting TypeScript
 TypeScript itself is simple to add to any project with `npm`.
