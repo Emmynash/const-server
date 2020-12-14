@@ -16,17 +16,17 @@ import { cron } from "./cron";
 // create connection with database
 // note that its not active database connection
 // TypeORM creates you connection pull to uses connections from pull on your requests
-createConnection({
-    type: "postgres",
-    url: config.databaseUrl,
-    synchronize: true,
-    logging: false,
-    entities: config.dbEntitiesPath,
-    extra: {
-        ssl: config.dbsslconn, // if not development, will use SSL
-    }
-}).then(async () => {
-
+// createConnection({
+//     type: "postgres",
+//     url: config.databaseUrl,
+//     synchronize: true,
+//     logging: false,
+//     entities: config.dbEntitiesPath,
+//     extra: {
+//         ssl: config.dbsslconn, // if not development, will use SSL
+//     }
+// }).then
+try {
     const app = new Koa();
 
     // Provides important security headers to make your app more secure
@@ -57,5 +57,11 @@ createConnection({
     app.listen(config.port);
 
     console.log(`Server running on port ${config.port}`);
+} catch (error) {
+    console.log("could not start server", error);
+}
+// (async () => {
 
-}).catch((error: string) => console.log("TypeORM connection error: ", error));
+
+
+// }).catch((error: string) => console.log("TypeORM connection error: ", error));
