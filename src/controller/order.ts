@@ -1,5 +1,4 @@
 import { BaseContext } from "koa";
-import { getManager, Repository, Not, Equal, Like } from "typeorm";
 import { validate, ValidationError } from "class-validator";
 import { request, summary, path, body, responsesAll, tagsAll } from "koa-swagger-decorator";
 import { orderSchema, updateOrderSchema } from '../entity/order'
@@ -18,16 +17,14 @@ export default class OrderController {
         const orders = db.ref(`orders`);
 
         // load all orders
-        orders.on("value", function (snapshot) {
+        orders.on("value", (snapshot) => {
             // return OK status code and loaded orders array
             ctx.status = 200;
             ctx.body = snapshot.val();
-        }, function (error) {
+        }, (error) => {
                 ctx.status = 400;
                 ctx.body = error;
-        });
-
-       
+        });  
 
     }
 
@@ -43,10 +40,9 @@ export default class OrderController {
         const orders = db.ref(`orders/` + ctx.params.uid );
 
         // load order by id
-        orders.once("value", function (snapshot) {
+        orders.once("value", (snapshot) => {
             // return OK status code and loaded users array
          const order = snapshot.val();
-         console.log(order)
             if (order) {
                 // return OK status code and loaded order object
                 ctx.status = 200;
@@ -56,13 +52,10 @@ export default class OrderController {
                 ctx.status = 400;
                 ctx.body = "The order you are trying to retrieve doesn't exist in the db";
             }
-        }, function (error) {
+        }, (error) => {
             ctx.status = 400;
             ctx.body = error;
         });
-
-
-
     }
 
     @request("post", "/orders")
@@ -102,9 +95,9 @@ export default class OrderController {
         } else {
             // save the order contained in the POST body
             const order = orders.push(orderToBeSaved);
-            // return CREATED status code and updated order
+            // return CREATED status code and update order
             ctx.status = 201;
-            ctx.body = order;
+            ctx.body = "Order successfully created!";
         }
     }
 
@@ -116,18 +109,18 @@ export default class OrderController {
     @body(updateOrderSchema)
     public static async updateOrder(ctx: BaseContext): Promise<void> {
 
-        // get databasee reefrence for order
+        // get database reference for order
         const db = admin.database();
-        const orders = db.ref(`orders`);
+        const orders = db.ref(`orders/` + ctx.params.uid );
 
-        // build up entity order to be saved
+        // build up entity order to be updated
 
         const orderToBeUpdated = {
             bookingDate: ctx.request.body.bookingDate,
             title: ctx.request.body.title,
         }
 
-        // validate user entity
+        // validate order entity
         const errors: ValidationError[] = await validate(orderToBeUpdated); // errors is an array of validation errors
 
 
@@ -135,23 +128,23 @@ export default class OrderController {
             // return BAD REQUEST status code and errors array
             ctx.status = 400;
             ctx.body = errors;
-        } 
-        // else if (!await userRepository.findOne(userToBeUpdated.id)) {
-        //     // check if a user with the specified id exists
-        //     // return a BAD REQUEST status code and error message
-        //     ctx.status = 400;
-        //     ctx.body = "The user you are trying to update doesn't exist in the db";
-        // } else if (await userRepository.findOne({ id: Not(Equal(userToBeUpdated.id)), email: userToBeUpdated.email })) {
-        //     // return BAD REQUEST status code and email already exists error
-        //     ctx.status = 400;
-        //     ctx.body = "The specified e-mail address already exists";
-        // } 
-        else {
-            // save the user contained in the PUT body
-            const order = orders.update(orderToBeUpdated);
-            // return CREATED status code and updated user
-            ctx.status = 201;
-            ctx.body = order;
+        } else {
+
+            orders.once("value", (snapshot) => {
+                // return OK status code and loaded users array
+                const orderExist = snapshot.val();
+                if (!orderExist) {
+                    // return a BAD REQUEST status code and error message
+                    ctx.status = 400;
+                   return ctx.body = "The order you are trying to update doesn't exist in the db";
+                }
+                // save the order contained in the PUT body
+                orders.update(orderToBeUpdated)
+                // return OK status code and loaded order object
+                ctx.status = 200;
+                ctx.body = "Order successfully updated!";
+            });
+           
         }
 
     }
