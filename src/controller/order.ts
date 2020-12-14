@@ -34,18 +34,19 @@ export default class OrderController {
     @request("get", "/orders/{uid}")
     @summary("Find order by uid")
     @path({
-        id: { type: "string", required: true, description: "uid of order" }
+        uid: { type: "string", required: true, description: "order id" }
     })
     public static async getOrder(ctx: BaseContext): Promise<void> {
 
         // get database reference for order
         const db = admin.database();
-        const orders = db.ref(`orders` + +ctx.params.uid );
+        const orders = db.ref(`orders/` + ctx.params.uid );
 
         // load order by id
-        orders.on("value", function (snapshot) {
+        orders.once("value", function (snapshot) {
             // return OK status code and loaded users array
          const order = snapshot.val();
+         console.log(order)
             if (order) {
                 // return OK status code and loaded order object
                 ctx.status = 200;
@@ -110,7 +111,7 @@ export default class OrderController {
     @request("put", "/orders/{uid}")
     @summary("Update an order")
     @path({
-        id: { type: "string", required: true, description: "id of order" }
+        uid: { type: "string", required: true, description: "order id" }
     })
     @body(updateOrderSchema)
     public static async updateOrder(ctx: BaseContext): Promise<void> {
