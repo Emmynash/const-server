@@ -4,7 +4,6 @@ import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
 import cors from "@koa/cors";
 import winston from "winston";
-import { createConnection } from "typeorm";
 import "reflect-metadata";
 
 import { logger } from "./logger";
@@ -13,19 +12,6 @@ import { unprotectedRouter } from "./unprotectedRoutes";
 import { protectedRouter } from "./protectedRoutes";
 import { cron } from "./cron";
 
-// create connection with database
-// note that its not active database connection
-// TypeORM creates you connection pull to uses connections from pull on your requests
-// createConnection({
-//     type: "postgres",
-//     url: config.databaseUrl,
-//     synchronize: true,
-//     logging: false,
-//     entities: config.dbEntitiesPath,
-//     extra: {
-//         ssl: config.dbsslconn, // if not development, will use SSL
-//     }
-// }).then
 try {
     const app = new Koa();
 
@@ -60,8 +46,3 @@ try {
 } catch (error) {
     console.log("could not start server", error);
 }
-// (async () => {
-
-
-
-// }).catch((error: string) => console.log("TypeORM connection error: ", error));
