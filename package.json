@@ -1,5 +1,5 @@
 {
-  "name": "node-typescript-koa-rest",
+  "name": "const-koa-rest",
   "version": "1.7.0",
   "description": "API REST using NodeJS and KOA framework, typescript. TypeORM for SQL with class-validators. Middlewares JWT, CORS, Winston Logger. Swagger API docs",
   "main": "dist/server.js",
@@ -19,9 +19,9 @@
     "node": "12.x.x",
     "npm": "6.x.x"
   },
-  "author": "Javier Aviles",
+  "author": "Akita Emmanuel",
   "license": "MIT",
-  "homepage": "https://github.com/javieraviles/node-typescript-koa-rest#readme",
+  "homepage": "https://github.com/Emmynash/const-server.git#readme",
   "keywords": [
     "typescript",
     "koa",
@@ -38,7 +38,7 @@
     "cors",
     "github actions"
   ],
-  "repository": "github:javieraviles/node-typescript-koa-rest",
+  "repository": "github:Emmynash/const-server",
   "devDependencies": {
     "@types/cron": "^1.7.2",
     "@types/koa": "2.0.49",
