@@ -18,9 +18,16 @@ export default class OrderController {
 
         // load all orders
         orders.on("value", (snapshot) => {
-            // return OK status code and loaded orders array
+            const data = snapshot.val();
+           //convert object to array
+            const dataArray = Object.keys(data).map(key => ({
+                ...data[key],
+                uid: key,
+            }));
+
+             // return OK status code and loaded orders array
             ctx.status = 200;
-            ctx.body = snapshot.val();
+            ctx.body = dataArray;
         }, (error) => {
                 ctx.status = 400;
                 ctx.body = error;
